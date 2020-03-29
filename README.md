@@ -35,10 +35,12 @@ To start building lando env for lando, simple go to your directory which contain
 $ lando start
 $ lando new-project
 $ lando restart
+
+$ lando info ## To see the info about your environment like database credentials.
 ```
 The `lando new-project` will install your **laravel** fraimwork in the **www** directory. 
 
-**Boomshakalaka**
+**Boomshakalaka!! Don't forget to update your `.env` file with correct database credentials.**
 
 ## Usage & Tooling
 

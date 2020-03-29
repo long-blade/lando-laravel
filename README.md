@@ -1,7 +1,7 @@
 # Lando Recipe for Laravel
 
 
-I’ve become a big fan of using Lando for constructing my local dev environment quickly and easily. Lando is, as its website says, “a free, open source, cross-platform, local development environment and DevOps tool built on Docker container technology and developed by Tandem. Designed to work with most major languages, frameworks and services, Lando provides an easy way for developers of all skill levels to specify simple or complex requirements for their projects, and then quickly get to work on them.”
+I’ve become a big fan of using Lando for constructing my local dev environment. Lando is, as its website says, “a free, open source, cross-platform, local development environment and DevOps tool built on Docker container technology and developed by Tandem. Designed to work with most major languages, frameworks and services, Lando provides an easy way for developers of all skill levels to specify simple or complex requirements for their projects, and then quickly get to work on them.”
 
 Begin by checking out
 ---------------------

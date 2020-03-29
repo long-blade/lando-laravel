@@ -1,12 +1,23 @@
 #!/usr/bin/env sh
 
-hash composer > /dev/null 2>&1
-HAS_COMPOSER=$?;
+ENVIRONMENT='dev'
 
-if [ "$HAS_COMPOSER" != "0" ]
+for i in "$@"
+do
+case $i in
+    -e=*|--environment=*)
+    ENVIRONMENT="${i#*=}"
+    shift # past argument=value
+    ;;
+    *)
+          # unknown option
+    ;;
+esac
+done
+
+if [ $ENVIRONMENT != 'dev' ]
 then
-    curl -s http://getcomposer.org/installer | php;
-    php composer.phar self-update;
-    mv composer.phar /usr/local/bin/composer;
-    composer global require hirak/prestissimo;
+  su -c "cd /app/www/ && composer install --no-dev;" www-data;
+else
+  su -c "cd /app/www/ && composer install" www-data;
 fi

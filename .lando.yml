@@ -14,10 +14,6 @@ services:
       database: config/mysql/my.cnf
     webroot: www/public
     build_as_root:
-      - apt-get update
-      - curl -s http://getcomposer.org/installer | php
-      - php composer.phar self-update
-      - mv composer.phar /usr/local/bin/composer
       - composer global require laravel/installer
 
   database:

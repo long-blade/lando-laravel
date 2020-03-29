@@ -1,0 +1,8 @@
+name: {{APPLICATION_NAME}}
+services:
+  database:
+    portforward: {{DATABASE_PORT}}
+# proxy:
+#   appserver:
+#     - {{APPLICATION_DOMAIN_OPTIONAL}}
+

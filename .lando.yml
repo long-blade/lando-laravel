@@ -1,0 +1,68 @@
+name: $LANDO_APP_NAME
+recipe: laravel
+
+services:
+  appserver:
+    type: php:7.3
+    via: apache:2.4
+    overrides:
+      environment:
+        PHP_IDE_CONFIG: "serverName=appserver"
+    xdebug: true
+    config:
+      php: config/php/php.ini
+      database: config/mysql/my.cnf
+    webroot: www/public
+    build_as_root:
+      - apt-get update
+      - curl -s http://getcomposer.org/installer | php
+      - php composer.phar self-update
+      - mv composer.phar /usr/local/bin/composer
+      - composer global require hirak/prestissimo
+
+  database:
+    type: mysql:5.7
+
+config:
+  webroot: www/public
+
+events:
+  post-new-project:
+    - cd /app/www/ && composer require laravel/telescope --dev 
+    - cd /app/www/ && composer require laravel/ui
+
+tooling:
+  new-project:
+    service: appserver
+    user: root
+    description: Creates a brand new Laravel project
+    cmd:
+      # - rm -rf /app/www       # should i remove any existing folder first? what about the code ?
+      - composer create-project --prefer-dist laravel/laravel www
+      # - laravel new www --auth  # include auth
+
+  run-npm:
+    service: appserver
+    user: root
+    description: Runs npm run for the curr container
+    cmd:
+      - chmod "+x /app/tooling/npm-run.sh" && /bin/sh /app/tooling/npm-run.sh
+    level: app
+    options:
+      environment:
+        passthrough: true
+        alias:
+          - e
+        describe: Select enviroment [ dev / production ]
+        interactive:
+          type: input
+          message: In which enviroment you want to run `run-vues` [dev / production] ?
+          default: dev   
+
+  install-node:
+    service: appserver
+    user: root
+    cmd:
+      - chmod +x "/app/tooling/node-install.sh"
+      - /bin/sh /app/tooling/node-install.sh 
+

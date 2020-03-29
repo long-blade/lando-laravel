@@ -18,7 +18,7 @@ services:
       - curl -s http://getcomposer.org/installer | php
       - php composer.phar self-update
       - mv composer.phar /usr/local/bin/composer
-      - composer global require hirak/prestissimo
+      - composer global require laravel/installer
 
   database:
     type: mysql:5.7

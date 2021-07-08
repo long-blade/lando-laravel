@@ -1,9 +1,19 @@
 name: $LANDO_APP_NAME
 recipe: laravel
 
+config:
+  via: apache:2.4
+  webroot: www/public
+  php: 7.4
+  xdebug: false
+  database: mysql:5.7
+  config:
+    php: config/php/php.ini
+    database: config/mysql/my.cnf
+
 services:
   appserver:
-    type: php:7.3
+    type: php:7.4
     via: apache:2.4
     overrides:
       environment:
@@ -14,20 +24,10 @@ services:
       database: config/mysql/my.cnf
     webroot: www/public
     build_as_root:
-      - chmod +x "/app/services/appserver_build_as_root.sh"
-      - /bin/sh /app/services/appserver_build_as_root.sh
-
-  database:
-    type: mysql:5.7
-
-config:
-  webroot: www/public
-
-events:
-  post-new-project:
-    - cd /app/www/ && composer require laravel/telescope --dev 
-    - cd /app/www/ && composer require laravel/ui
-
+      - chmod +x "/app/services/appserver/build_as_root.sh" && /bin/sh /app/services/appserver/build_as_root.sh
+    #run_as_root:
+      #- chmod +x "/app/services/appserver/run_as_root.sh" && /bin/sh /app/services/appserver/run_as_root.sh
+          
 tooling:
   new-project:
     service: appserver
@@ -35,31 +35,14 @@ tooling:
     description: Creates a brand new Laravel project
     cmd:
       # - rm -rf /app/www       # should i remove any existing folder first? what about the code ?
-      - composer create-project --prefer-dist laravel/laravel www
+      - composer create-project laravel/laravel www
       # - laravel new www --auth  # include auth
-
-  run-npm:
-    service: appserver
+      
+  db-backup:
+    service: database
     user: root
-    description: Runs npm run for the curr container
+    description: Creates a database backup
     cmd:
-      - chmod "+x /app/tooling/npm-run.sh" && /bin/sh /app/tooling/npm-run.sh
-    level: app
-    options:
-      environment:
-        passthrough: true
-        alias:
-          - e
-        describe: Select enviroment [ dev / production ]
-        interactive:
-          type: input
-          message: In which enviroment you want to run `run-vues` [dev / production] ?
-          default: dev   
-
-  install-node:
-    service: appserver
-    user: root
-    cmd:
-      - chmod +x "/app/tooling/node-install.sh"
-      - /bin/sh /app/tooling/node-install.sh 
+      - echo "Dumping $LANDO_APP_NAME database..."
+      - mkdir -p /app/sql && /helpers/sql-export.sh /app/sql/dump.sql
 
